@@ -29,10 +29,6 @@ jobs:
         with:
           cache-on-failure: true
 
-      - name: Log in to Docker
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io --username ${DOCKER_USERNAME} --password-stdin
-
       - name: Set up Docker builder
         run: |
           docker run --privileged --rm tonistiigi/binfmt --install arm64,amd64
@@ -40,5 +36,6 @@ jobs:
 
       - name: Build and push image
         run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io --username ${DOCKER_USERNAME} --password-stdin
           cargo install cross
           env PROFILE=maxperf make docker-build-latest
